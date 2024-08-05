@@ -159,6 +159,9 @@ def import_from_strava_checkout(repository: ActivityRepository) -> None:
 
     for activity_id in tqdm(activities_ids_to_parse, desc="Import from Strava export"):
         row = activities.loc[activity_id]
+        if row["Filename"] is np.nan:
+            logger.warning(f"Skipping activity {activity_id} without file.")
+            continue
         activity_file = checkout_path / row["Filename"]
         table_activity_meta = {
             "calories": float_or_none(row["Calories"]),
